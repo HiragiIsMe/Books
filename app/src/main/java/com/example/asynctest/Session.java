@@ -23,4 +23,7 @@ public class Session {
     public String getToken(){
         return sharedPreferences.getString("token", "");
     }
+    public Long getDate(){
+        return  sharedPreferences.getLong("date", -1);
+    }
 }

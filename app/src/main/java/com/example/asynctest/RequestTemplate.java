@@ -13,6 +13,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 public class RequestTemplate {
+
     public static JSONObject GetJsonUrlParam(String url, String param){
 
         JSONObject jsonObject = null;
@@ -52,5 +53,31 @@ public class RequestTemplate {
             e.printStackTrace();
         }
         return jsonObject;
+    }
+
+    public static int getResponseSignup(String url, String params){
+        int response = 0;
+
+        try{
+            URL urlRequest = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) urlRequest.openConnection();
+            try{
+                conn.setDoOutput(true);
+                conn.setRequestProperty("Content-Type", "application/json");
+                conn.setRequestMethod("POST");
+
+                OutputStreamWriter writer = new OutputStreamWriter(conn.getOutputStream());
+                writer.write(params);
+                writer.flush();
+
+                response = conn.getResponseCode();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
+        return response;
     }
 }

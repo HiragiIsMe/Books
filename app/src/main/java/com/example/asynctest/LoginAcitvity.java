@@ -41,32 +41,26 @@ public class LoginAcitvity extends AppCompatActivity {
         signup = findViewById(R.id.signup);
         login = findViewById(R.id.login);
 
-        if (session.getToken() == "") {
-            login.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+        login.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
 
-                    if(email.getText().length() != 0 || password.getText().length() != 0){
-                        JSONObject data = new JSONObject();
-                        try {
-                            data.put("email", email.getText().toString());
-                            data.put("password", password.getText().toString());
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-
-                        LoginTask task = new LoginTask();
-                        task.execute(data.toString());
-                    }else{
-                        Toast.makeText(getApplicationContext(),"Can't Find The User",Toast.LENGTH_LONG).show();
+                if(email.getText().length() != 0 || password.getText().length() != 0){
+                    JSONObject data = new JSONObject();
+                    try {
+                        data.put("email", email.getText().toString());
+                        data.put("password", password.getText().toString());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
+
+                    LoginTask task = new LoginTask();
+                    task.execute(data.toString());
+                }else{
+                    Toast.makeText(getApplicationContext(),"All Field Must Be Filled",Toast.LENGTH_LONG).show();
                 }
-            });
-        } else {
-            Intent intent = new Intent(LoginAcitvity.this, MainActivity.class);
-            startActivity(intent);
-            finish();
-        }
+            }
+        });
 
         signup.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,8 +77,12 @@ public class LoginAcitvity extends AppCompatActivity {
         ProgressDialog dialog = new ProgressDialog(LoginAcitvity.this);
         @Override
         protected String doInBackground(String... strings) {
+            String result = null;
             JSONObject obj = RequestTemplate.GetJsonUrlParam("http://10.0.2.2:5000/Api/Auth", strings[0]);
-            return obj.toString();
+            if(obj != null){
+                return obj.toString();
+            }
+            return result;
         }
 
         @Override
