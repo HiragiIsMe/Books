@@ -80,4 +80,24 @@ public class RequestTemplate {
 
         return response;
     }
+
+    public static String getData(String url, String token){
+        String result = "";
+        try{
+            URL getUrl = new URL(url);
+            HttpURLConnection conn = (HttpURLConnection) getUrl.openConnection();
+
+            conn.setRequestProperty("Authorization", "Bearer "+ token);
+            InputStreamReader reader = new InputStreamReader(conn.getInputStream());
+
+            int data = reader.read();
+            while (data != -1){
+                result += (char) data;
+                data = reader.read();
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return result;
+    }
 }

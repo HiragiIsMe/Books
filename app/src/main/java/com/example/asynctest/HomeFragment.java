@@ -22,6 +22,9 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import com.google.android.material.progressindicator.CircularProgressIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -51,6 +54,8 @@ public class HomeFragment extends Fragment {
     EditText search;
     Session session;
     List<Book> book;
+    CircularProgressIndicator progressIndicator;
+    RecycleHomeAdapter.RecycleViewOnclick listener;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -100,8 +105,7 @@ public class HomeFragment extends Fragment {
 
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-                searchBook search = new searchBook();
-                search.execute();
+
             }
 
             @Override
@@ -111,53 +115,49 @@ public class HomeFragment extends Fragment {
             }
         });
 
+        progressIndicator = v.findViewById(R.id.progressHome);
         session = new Session(getContext());
         book = new ArrayList<>();
         getBook getBook = new getBook();
         getBook.execute();
 
         recyclerView = v.findViewById(R.id.recycleviewHome);
+
+        listener = new RecycleHomeAdapter.RecycleViewOnclick() {
+
+
+            @Override
+            public void onItemClick(View v, int position) {
+                Bundle bundle = new Bundle();
+                bundle.putString("idBook", book.get(position).getId());
+
+                DetailBookFragment frg = new DetailBookFragment();
+                frg.setArguments(bundle);
+
+                getFragmentManager().beginTransaction().replace(R.id.mainframe, frg).commit();
+            }
+        };
         return v;
     }
 
     public class getBook extends AsyncTask<String,String,String>{
-       ProgressDialog dialog = new ProgressDialog(getContext());
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.setMessage("Processing");
-            dialog.setCancelable(false);
-            dialog.show();
+            progressIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            String result = "";
-            try{
-                URL url = new URL("http://10.0.2.2:5000/Api/Book");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            String result = RequestTemplate.getData("http://10.0.2.2:5000/Api/Book", session.getToken());
 
-                conn.setRequestProperty("Authorization", "Bearer " + session.getToken());
-                InputStream in = conn.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-
-                int data = reader.read();
-                while (data != -1) {
-                    result += (char) data;
-                    data = reader.read();
-                }
-
-                return result;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
             return result;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            dialog.dismiss();
+            progressIndicator.setVisibility(View.GONE);
             try{
                 JSONArray jsonArray = new JSONArray(s);
                 for(int i = 0; i < jsonArray.length(); i++){
@@ -172,65 +172,46 @@ public class HomeFragment extends Fragment {
             }
 
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            RecycleHomeAdapter adapter = new RecycleHomeAdapter(book, getContext());
+            RecycleHomeAdapter adapter = new RecycleHomeAdapter(book, getContext(), listener);
             recyclerView.setAdapter(adapter);
         }
     }
 
     public class searchBook extends AsyncTask<String,String,String>{
-        ProgressDialog dialog = new ProgressDialog(getContext());
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            dialog.setMessage("Processing");
-            dialog.setCancelable(false);
-            dialog.show();
+            progressIndicator.setVisibility(View.VISIBLE);
         }
 
         @Override
         protected String doInBackground(String... strings) {
-            String result = "";
-            try{
-                URL url = new URL("http://10.0.2.2:5000/Api/Book?searchText="+search.getText().toString());
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            String result = RequestTemplate.getData("http://10.0.2.2:5000/Api/Book?searchText="+search.getText().toString(), session.getToken());
 
-                conn.setRequestProperty("Authorization", "Bearer " + session.getToken());
-                InputStream in = conn.getInputStream();
-                InputStreamReader reader = new InputStreamReader(in);
-
-                int data = reader.read();
-                while (data != -1) {
-                    result += (char) data;
-                    data = reader.read();
-                }
-
-                return result;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
             return result;
         }
 
         @Override
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
-            dialog.dismiss();
+            progressIndicator.setVisibility(View.GONE);
+            Log.e("data", s);
             try{
+                book.clear();
                 JSONArray jsonArray = new JSONArray(s);
                 for(int i = 0; i < jsonArray.length(); i++){
                     JSONObject obj = jsonArray.getJSONObject(i);
                     book.add(new Book(obj.getString("id"), obj.getString("name"), obj.getString("authors")));
                 }
-                JSONObject obj = jsonArray.getJSONObject(1);
-                Log.e("datas", obj.getString("name"));
 
             }catch (Exception e){
                 e.printStackTrace();
             }
 
             recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
-            RecycleHomeAdapter adapter = new RecycleHomeAdapter(book, getContext());
+            RecycleHomeAdapter adapter = new RecycleHomeAdapter(book, getContext(), listener);
             recyclerView.setAdapter(adapter);
+
         }
     }
 }

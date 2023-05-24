@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".DetailBookFragment"
+    android:background="@color/main1">
+
+    <!-- TODO: Update blank fragment layout -->
+   <RelativeLayout
+       android:layout_width="match_parent"
+       android:layout_height="match_parent">
+
+       <ImageView
+           android:src="@drawable/images"
+           android:id="@+id/bookImage"
+           android:layout_width="200dp"
+           android:layout_height="200dp"
+           android:layout_centerHorizontal="true"
+           android:layout_marginTop="50dp"/>
+       <TextView
+           android:id="@+id/bookName"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="nameBook"
+           android:layout_below="@id/bookImage"
+           android:layout_marginTop="20dp"
+           android:textSize="20sp"
+           android:layout_marginLeft="20dp"
+           />
+       <TextView
+           android:id="@+id/bookAuthors"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="authors"
+           android:layout_below="@id/bookName"
+           android:layout_marginTop="10dp"
+           android:textSize="20sp"
+           android:layout_marginLeft="20dp"/>
+
+       <TextView
+           android:id="@+id/bookIsbn"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="isbn"
+           android:layout_below="@id/bookAuthors"
+           android:layout_marginTop="10dp"
+           android:textSize="20sp"
+           android:layout_marginLeft="20dp"/>
+
+       <TextView
+           android:id="@+id/bookPublisher"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="publisher"
+           android:layout_below="@id/bookIsbn"
+           android:layout_marginTop="10dp"
+           android:textSize="20sp"
+           android:layout_marginLeft="20dp"/>
+
+       <TextView
+           android:id="@+id/bookAvb"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="available"
+           android:layout_below="@id/bookPublisher"
+           android:layout_marginTop="10dp"
+           android:textSize="20sp"
+           android:layout_marginLeft="20dp"/>
+
+       <TextView
+           android:id="@+id/bookDesc"
+           android:layout_width="wrap_content"
+           android:layout_height="wrap_content"
+           android:text="description"
+           android:layout_below="@id/bookAvb"
+           android:layout_marginTop="10dp"
+           android:textSize="15sp"
+           android:layout_marginLeft="20dp"/>
+
+       <com.google.android.material.progressindicator.CircularProgressIndicator
+           android:id="@+id/detailProgress"
+           android:layout_width="200dp"
+           android:layout_height="200dp"
+           app:trackColor="@color/main3"
+           android:layout_centerVertical="true"
+           android:layout_centerHorizontal="true"
+           android:visibility="gone"
+           app:indicatorSize="40dp"/>
+   </RelativeLayout>
+
+</FrameLayout>
